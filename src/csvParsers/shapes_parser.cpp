@@ -78,18 +78,18 @@ map<int, string> get_file_shapes_list(const std::string& txt_path)
 
         //shape id
         getline(s, word, ',');
-        shape.ShapeId = stoi(word);
+        shape.ShapeId = word.empty() ? 0 : stoi(word);
 
         //latitude
         getline(s, word, ',');
-        shape.lat = stod(word);
+        shape.lat = word.empty() ? 0 : stod(word);
 
         //longitude
         getline(s, word, ',');
-        shape.lon = stod(word);
+        shape.lon = word.empty() ? 0 : stod(word);
 
         getline(s, word, ',');
-        shape.sequence = stoi(word);
+        shape.sequence = word.empty() ? 0 : stoi(word);
 
         if(lastShapeId != shape.ShapeId)
         {

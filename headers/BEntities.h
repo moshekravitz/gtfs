@@ -1,22 +1,26 @@
 #pragma once
 
 #include <string>
+#include <map>
+#include <list>
 
 struct BTrips
 {
-    int RouteId;
     std::string TripId;
+    int RouteId;
     std::string TripHeadsign;
-    int DirectionId;
     int ShapeId;
     std::string ArrivalTime;
     std::string DepartureTime;
-    int StopId;
-    int StopSequence;
-    int PickupType;
-    int DropOffType;
-    int ShapeDistTraveled;
+    std::map<int, int> StopId;
 };
+
+struct RouteTrips
+{
+    int routeId;
+    std::list<std::string> trips;
+};
+
 
 struct BCoordinateEntity
 {

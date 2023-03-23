@@ -19,6 +19,7 @@ struct FileTrips
 
 struct FileStopTime
 {
+    std::string TripId;
     std::string ArrivalTime;
     std::string DepartureTime;
     int StopId;

@@ -31,7 +31,7 @@ list<FileRoutes> get_file_routes_list(const std::string& txt_path)
 
         //route Id
         getline(s, word, ',');
-        route.RouteId = stoi(word);
+        route.RouteId = !word.empty() ?stoi(word) : throw "missing route id";
 
         getline(s, word, ',');
 

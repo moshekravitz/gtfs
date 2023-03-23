@@ -1,8 +1,4 @@
-#include "../../headers/FileEntities.h"
-#include "../../headers/checks.h"
-#include <fstream>
-#include <sstream>
-#include <list>
+#include "../../headers/parsers.h"
 using namespace std;
 
 list<FileTrips> get_file_trips_list(const std::string& txt_path)
@@ -24,14 +20,16 @@ list<FileTrips> get_file_trips_list(const std::string& txt_path)
         throw "bad structure in routes";
     //end of check
 
+    int asdf = 0;
     while (!trips_file.eof())
     {
         getline(trips_file, line_of_info);
+        line_of_info.erase(std::remove_if(line_of_info.begin(), line_of_info.end(), [](char c) { return c >= 0 && c <= 31; }), line_of_info.end());
         stringstream s(line_of_info);
 
         //route Id
         getline(s, word, ',');
-        trip.RouteId = stoi(word);
+        trip.RouteId = word.empty() ? 0 : stoi(word);
 
         getline(s, word, ',');//Service Id
 
@@ -45,14 +43,20 @@ list<FileTrips> get_file_trips_list(const std::string& txt_path)
 
         //Direction Id
         getline(s, word, ',');
-        trip.DirectionId = stoi(word);
+        trip.DirectionId = word.empty() ? 0 : stoi(word);
 
         //Shape Id
         getline(s, word, ',');
-        trip.ShapeId = stoi(word);
+        trip.ShapeId = word.empty() ? 0 : stoi(word);
 
         trips_list.emplace_back(trip);
+        asdf++;
     }
+
+
+    std::cout << "\n--------------------\n";
+    std::cout << "trips" << asdf << "\n";
+    std::cout << "--------------------\n";
     return trips_list;
 }
 
