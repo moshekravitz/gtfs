@@ -19,6 +19,7 @@ struct RouteTrips
 {
     int routeId;
     std::list<std::string> trips;
+    //std::list<BTrips> trips;
 };
 
 

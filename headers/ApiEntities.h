@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <map>
+#include <list>
 using namespace std;
 
 struct Routes
@@ -22,12 +23,18 @@ struct Shape
     string shape;
 };
 
+struct stopTime
+{
+    int stopId;
+    string stopInterval;
+};
+
 struct ExtendedRoutes
 {
     int RouteId;
     string routeHeadSign;
     string ShapeStr;
-    pair<int, string> TimeIntervals;
+    std::list<stopTime> TimeIntervals;
 };
 
 struct StopInfo

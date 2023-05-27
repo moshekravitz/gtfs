@@ -1,5 +1,4 @@
 #include "../headers/BL.h"
-#include <set>
 #include <iostream>
 
 std::list<RouteTrips> process_trips(std::list<FileTrips> csv_trips)
@@ -28,18 +27,23 @@ std::list<RouteTrips> process_trips(std::list<FileTrips> csv_trips)
 
     return route_and_Trips;
 }
+
 bool comp_list_stoptimes(std::map<int,std::string> m1, std::map<int,std::string> m2)
 {
     if(m1.size() != m2.size())
         return false;
-    for(auto it : m1)
-    {
-        //cheching the equality of the stop id
-        if(m1[it.first].empty())//TODO: is this accurate?
-            return false;
 
-        //cheching the equality of the times
-        if(m1[it.first] != it.second)
+    for(const auto & [key, value] : m1)
+    {
+        const auto & it = m2.find(key);
+        if(it == m2.end() || it->second != value)
+            return false;
+    }
+
+    for(const auto & [key, value] : m2)
+    {
+        const auto & it = m1.find(key);
+        if(it == m2.end() || it->second != value)
             return false;
     }
     return true;
@@ -49,6 +53,7 @@ std::set<std::string> get_problematic_stops_times(std::map<std::string, std::map
 {
     //std::list<std::string> duplicates_list;
     std::set<std::string> duplicates_list;
+
     for(auto it = stop_times.begin(); it != stop_times.end(); it++)
     {
         for(auto it2 = it; it2 != stop_times.end(); it2++)
@@ -56,10 +61,15 @@ std::set<std::string> get_problematic_stops_times(std::map<std::string, std::map
             if(comp_list_stoptimes(it->second, it2->second))
             {
                 //TODO: is insert correct?
-                duplicates_list.insert(it->first);
+                //duplicates_list.insert(it->first);
                 duplicates_list.insert(it2->first);
             }
         }
     }
-
+    std::cout << "\n----------------------\n";
+    std::cout << duplicates_list.size();
+    std::cout << "\n----------------------\n";
+    return duplicates_list;
 }
+
+
