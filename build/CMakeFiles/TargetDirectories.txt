@@ -1,0 +1,3 @@
+/home/moshekravitz/CLionProjects/gtfs/build/CMakeFiles/gtfs.dir
+/home/moshekravitz/CLionProjects/gtfs/build/CMakeFiles/edit_cache.dir
+/home/moshekravitz/CLionProjects/gtfs/build/CMakeFiles/rebuild_cache.dir
