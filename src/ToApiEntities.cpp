@@ -137,3 +137,81 @@ map<string, map<int, string>> stopTimes_map(list<FileStopTime> fileStops)
     }
     return trip_stops;
 }
+
+
+std::map<int, std::string> convertListToMap(const std::list<Shape>& list) {
+    std::map<int, std::string> resultMap;
+    
+    for (const auto& item : list) {
+        resultMap[item.ShapeId] = item.shape;
+    }
+    
+    return resultMap;
+}
+
+std::list<ExtendedRoutes> process_routes(std::list<RouteTrips> route_trips, std::list<FileRoutes> file_routes, std::list<FileTrips> file_trips, std::map<std::string, std::list<StopTime>> stop_times, std::list<Shape> shapes)  
+{
+    //std::map<int, std::string> shapes_map = convertListToMap(shapes);
+    std::list<ExtendedRoutes> extended_routes;
+    ExtendedRoutes temp_route;
+    RouteTrips tempRouteTrip;
+
+    for(auto route = file_routes.begin(); route != file_routes.end(); route++)
+    {
+        temp_route.RouteId = route->RouteId;
+        for(auto route_trips_it = route_trips.begin(); route_trips_it != route_trips.end(); route_trips_it++)
+        {
+            if(route_trips_it->routeId == route->RouteId)
+            {
+                tempRouteTrip = *route_trips_it;
+                route_trips_it = route_trips.end();
+                route_trips_it--;
+            }
+        }
+        //temp_route.RouteId = route->routeId;
+        
+        FileTrips temp_trip;
+        for(auto file_trip = file_trips.begin(); file_trip != file_trips.end(); file_trip++)
+        {
+            for(auto trip = tempRouteTrip.trips.begin(); trip != tempRouteTrip.trips.end(); trip++)
+            {
+                if(*trip == file_trip->TripId)
+                {
+                    temp_trip = *file_trip;
+                    file_trip = file_trips.end();
+                    file_trip--;
+                }
+            }
+        }
+
+        temp_route.routeHeadSign = temp_trip.TripHeadsign;
+
+        //if(temp_trip.ShapeId == shapes_map.find(temp_trip.ShapeId)->first)
+                //temp_route.ShapeStr = shapes_map[temp_trip.ShapeId];
+        //else
+         //   throw std::runtime_error("ShapeId not found in process routes");
+        for(auto shapesIt = shapes.begin(); shapesIt != shapes.end(); shapesIt++)
+        {
+            if(shapesIt->ShapeId == temp_trip.ShapeId)
+            {
+                temp_route.ShapeStr = shapesIt->shape;
+                shapesIt = shapes.end();
+                shapesIt--;
+            }
+        }
+
+        for(auto stop_time = stop_times.begin(); stop_time != stop_times.end(); stop_time++)
+        {
+            if(stop_time->first == temp_trip.TripId)
+            {
+                //temp_route.TimeIntervals = stop_time->second;
+                temp_route.StopInfo = stop_time->second;
+                stop_time = stop_times.end();
+                stop_time--;
+            }
+        }
+        extended_routes.push_back(temp_route);
+    }
+
+    return extended_routes;
+}

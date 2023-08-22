@@ -1,4 +1,5 @@
 #include "../headers/BL.h"
+#include "../headers/ApiEntities.h"
 #include <iostream>
 
 std::list<RouteTrips> process_trips(std::list<FileTrips> csv_trips)
@@ -6,7 +7,6 @@ std::list<RouteTrips> process_trips(std::list<FileTrips> csv_trips)
     std::list<RouteTrips> route_and_Trips;
 
     bool flag = false;
-    std::cout << "hello world" << std::endl;
     for(std::list<FileTrips>::const_iterator it = csv_trips.begin(); it != csv_trips.end(); it++)
     {
         for(auto route = route_and_Trips.begin(); route != route_and_Trips.end(); route++)

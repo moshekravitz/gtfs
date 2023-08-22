@@ -23,18 +23,20 @@ struct Shape
     string shape;
 };
 
-struct stopTime
+
+struct StopTime
 {
     int stopId;
     string stopInterval;
-};
+}; 
 
 struct ExtendedRoutes
 {
     int RouteId;
     string routeHeadSign;
     string ShapeStr;
-    std::list<stopTime> TimeIntervals;
+    //std::map<int, std::string> TimeIntervals;
+    std::list<StopTime> stopTime;
 };
 
 struct StopInfo
@@ -43,4 +45,20 @@ struct StopInfo
     string headSign;
     double lan;
     double lon;
+};
+
+struct ApiEntities
+{
+    std::list<Routes> Routes;
+    std::list<Shape> Shapes;
+    std::list<StopInfo> Stops;
+    std::list<ExtendedRoutes> ExtendedRoutes;
+};
+
+struct JsonStrs
+{
+    string Routes;
+    string Shapes;
+    string Stops;
+    string ExtendedRoutes;
 };

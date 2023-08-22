@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <list>
 
 struct FileRoutes
 {
@@ -60,4 +61,13 @@ struct FileShapes
     double lon;
     double lat;
     int sequence;
+};
+
+struct FileEntities
+{
+    std::list<FileRoutes>* routes;
+    std::list<FileTrips>* trips;
+    std::list<FileStopTime>* stopTime;
+    std::list<FileStopInfo>* stopInfo;
+    //std::list<FileShapes>* shapes;
 };
