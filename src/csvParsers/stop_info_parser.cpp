@@ -22,7 +22,7 @@ list<FileStopInfo> get_file_stop_info_list(const std::string& txt_path)
 
     bool good_structure = check_csv_structure(structure, 9, line_of_info);
     if(!good_structure)
-        throw "bad structure in routes";
+        throw std::runtime_error("bad structure in routes");
     //end of check
 
     while (!stop_info_file.eof())

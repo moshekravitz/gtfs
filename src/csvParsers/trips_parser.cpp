@@ -17,7 +17,7 @@ list<FileTrips> get_file_trips_list(const std::string& txt_path)
 
     bool good_structure = check_csv_structure(structure, 6, line_of_info);
     if(!good_structure)
-        throw "bad structure in routes";
+        throw std::runtime_error("bad structure in routes");
     //end of check
 
     int asdf = 0;

@@ -1,13 +1,27 @@
 #include "data_handler.h"
 
 void DataHandler::process_data(){
-    list<RouteTrips> route_and_trips = process_trips(*this->file_entities.trips);
+    std::cout << "processing data\n";
+    if(this->file_entities.trips == nullptr)
+       cout << "null";
+    else
+        cout << "not null";
+    list<FileTrips> asdf = *this->file_entities.trips;
+    std::cout << "adsf :";
+    std::cout << asdf.front().TripId;
+
+    list<RouteTrips> route_and_trips = process_trips(*(this->file_entities.trips));
+    std::cout << "processed trips\n";
     // stopTimes_map(*this->file_entities.stop_times;
-    map<string, list<StopTime>> stopTimes_map = DataHandler::stopTimes_map(*this->file_entities.stopTime);
+    map<string, list<StopTime>> stop_times_map = DataHandler::stopTimes_map(*this->file_entities.stopTime);
+    std::cout << "got stop time map\n";
     this->api_entities.Routes = to_api_routes(*this->file_entities.routes);
+    std::cout << "got api routes\n";
     this->api_entities.Stops = to_api_stopInfo(*this->file_entities.stopInfo);
-    this->api_entities.ExtendedRoutes = process_routes(route_and_trips, *this->file_entities.routes, *this->file_entities.trips, stopTimes_map, this->api_entities.Shapes);
-    
+    std::cout << "got api stop info\n";
+    this->api_entities.ExtendedRoutes = process_routes(route_and_trips, *this->file_entities.routes, *this->file_entities.trips, stop_times_map, this->api_entities.Shapes);
+    std::cout << "processed routes\n";
+
 }
 string DataHandler::get_interval(const string& str1, const string& str2)
 {
@@ -211,7 +225,7 @@ std::list<ExtendedRoutes> DataHandler::process_routes(std::list<RouteTrips> rout
             if(stop_time->first == temp_trip.TripId)
             {
                 //temp_route.TimeIntervals = stop_time->second;
-                temp_route.StopInfo = stop_time->second;
+                temp_route.stopTime = stop_time->second;
                 stop_time = stop_times.end();
                 stop_time--;
             }

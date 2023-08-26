@@ -8,7 +8,7 @@ list<FileStopTime> get_file_stop_time_list(const std::string& txt_path)
     stop_times_file.open(txt_path);
 
     if (!stop_times_file.is_open()) {
-        throw "Failed to open file\n";
+        throw std::runtime_error("Failed to open file\n");
     }
 
     FileStopTime stopTime;
@@ -27,7 +27,7 @@ list<FileStopTime> get_file_stop_time_list(const std::string& txt_path)
 
     bool good_structure = check_csv_structure(structure, 8, line_of_info);
     if(!good_structure)
-        throw "bad structure in routes";
+        throw std::runtime_error("bad structure in routes");
     //end of check
 
     stringstream s;

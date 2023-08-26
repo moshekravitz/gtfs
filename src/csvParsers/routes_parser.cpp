@@ -21,7 +21,7 @@ list<FileRoutes> get_file_routes_list(const std::string& txt_path)
 
     bool good_structure = check_csv_structure(structure, 7, line_of_info);
     if(!good_structure)
-        throw "bad structure in routes";
+        throw std::runtime_error("bad structure in routes");
     //end of check
 
     while (!routes_file.eof())
@@ -31,7 +31,7 @@ list<FileRoutes> get_file_routes_list(const std::string& txt_path)
 
         //route Id
         getline(s, word, ',');
-        route.RouteId = !word.empty() ?stoi(word) : throw "missing route id";
+        route.RouteId = !word.empty() ?stoi(word) : throw std::runtime_error("missing route id");
 
         getline(s, word, ',');
 

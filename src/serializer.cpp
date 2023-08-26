@@ -4,7 +4,7 @@
 void DataHandler::serialize_data()
 {
     json_strs.Routes = to_json(api_entities.Routes);
-    json_strs.Shapes = to_json(api_entities.Shapes);
+    //json_strs.Shapes = to_json(api_entities.stopTime);
     json_strs.ExtendedRoutes = to_json(api_entities.ExtendedRoutes);
     json_strs.Stops = to_json(api_entities.Stops);
 }

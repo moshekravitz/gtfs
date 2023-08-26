@@ -3,9 +3,10 @@
 
 bool check_csv_structure(std::string* structure, int size, std::string line_of_info)
 {
-    line_of_info = line_of_info.substr(3);
+    if(line_of_info.at(0) < 'A' || line_of_info.at(0) > 'z')
+        line_of_info = line_of_info.substr(3);
 
-line_of_info.erase(std::remove_if(line_of_info.begin(), line_of_info.end(), [](char c) { return c >= 0 && c <= 31; }), line_of_info.end());
+    line_of_info.erase(std::remove_if(line_of_info.begin(), line_of_info.end(), [](char c) { return c >= 0 && c <= 31; }), line_of_info.end());
     std::string word;
     std::stringstream s(line_of_info);
     for(int i = 0; i < size; i++)

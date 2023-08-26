@@ -1,17 +1,19 @@
 #pragma once
 #include <iostream>
 #include <math.h>
-#include <math.h>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 #include "../headers/FileEntities.h"
+#include "../headers/ApiEntities.h"
 #include "../headers/BL.h"
+using namespace std;
 
 class DataHandler
 {
     public:
-        DataHandler();
-        ~DataHandler();
+        DataHandler() { }
+        ~DataHandler() { }
 
         //getting the data from the file
         void load_data(const std::string& txt_path);
@@ -25,7 +27,7 @@ class DataHandler
         void send_data();
 
     private:
-    FileEntities file_entities;
+    FileEntities file_entities{};
     ApiEntities api_entities;
     JsonStrs json_strs;
 

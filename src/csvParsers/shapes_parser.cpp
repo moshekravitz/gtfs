@@ -68,7 +68,7 @@ map<int, string> get_file_shapes_list(const std::string& txt_path)
 
     bool good_structure = check_csv_structure(structure, 4, line_of_info);
     if(!good_structure)
-        throw "bad structure in shapes";
+        throw std::runtime_error("bad structure in shapes");
     //end of check
 
     while (!shapes_file.eof())
@@ -94,7 +94,7 @@ map<int, string> get_file_shapes_list(const std::string& txt_path)
         if(lastShapeId != shape.ShapeId)
         {
             if(shape.sequence != 1)
-                throw "shape error";
+                throw std::runtime_error("shape error");
             if(lastShapeId != 0)
             {
                 shape_str = encode_coordinates_list(coordinates);
@@ -108,7 +108,7 @@ map<int, string> get_file_shapes_list(const std::string& txt_path)
         {
             last_sequence++;
             if(last_sequence != shape.sequence)
-                throw "shape error";
+                throw std::runtime_error("shape error");
             CoordinateEntity tempCoord = {shape.lon,shape.lat};
             coordinates.emplace_back(tempCoord);
         }

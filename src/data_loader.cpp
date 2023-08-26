@@ -10,10 +10,46 @@ using namespace std;
 
 void DataHandler::load_data(const std::string& txt_path)
 {
-    this->load_routes(txt_path + "/routes.txt");
-    this->load_shapes(txt_path + "/shapes.txt");
-    this->load_stop_times(txt_path + "/stop_times.txt");
-    this->load_trips(txt_path + "/trips.txt");
+    try {
+        this->load_stop_times(txt_path + "/stop_times.txt");
+        std::cout << "loaded stop times\n";
+    }
+    catch(...)
+    {
+        std::cout << "stoptimes\n";
+    }
+    try {
+        this->load_trips(txt_path + "/trips.txt");
+    }
+    catch(...)
+    {
+        std::cout << "trips\n";
+    }
+    try {
+
+        this->load_routes(txt_path + "/routes.txt");
+        std::cout << "loaded routes\n";
+    }
+    catch(...)
+    {
+        std::cout << "routes\n";
+    }
+    try {
+        this->load_shapes(txt_path + "/shapes.txt");
+        std::cout << "loaded shapes\n";
+    }
+    catch(std::runtime_error& e)
+    {
+        std::cout << e.what() << " in shapes\n";
+    }
+    catch(std::exception& e)
+    {
+        std::cout << e.what() << " in shapes\n";
+    }
+    catch(...)
+    {
+        std::cout << "shapes\n";
+    }
 }
 
 void DataHandler::load_routes(const std::string& txt_path)
@@ -36,17 +72,20 @@ void DataHandler::load_routes(const std::string& txt_path)
 
     bool good_structure = check_csv_structure(structure, 7, line_of_info);
     if(!good_structure)
-        throw "bad structure in routes";
+        throw std::runtime_error("bad structure in routes");
+        //throw "bad structure in routes";
     //end of check
 
     while (!routes_file.eof())
     {
 
+        getline(routes_file, line_of_info);
+        //line_of_info.erase(std::remove_if(line_of_info.begin(), line_of_info.end(), [](char c) { return c >= 0 && c <= 31; }), line_of_info.end());
         stringstream s(line_of_info);
 
         //route Id
         getline(s, word, ',');
-        route.RouteId = !word.empty() ?stoi(word) : throw "missing route id";
+        route.RouteId = !word.empty() ? stoi(word) : throw std::runtime_error("missing route id");
 
         getline(s, word, ',');
 
@@ -82,10 +121,11 @@ void DataHandler::load_trips(const std::string& txt_path)
 
     bool good_structure = check_csv_structure(structure, 6, line_of_info);
     if(!good_structure)
-        throw "bad structure in routes";
+        throw std::runtime_error("bad structure in routes");
     //end of check
 
     int asdf = 0;
+
     while (!trips_file.eof())
     {
         getline(trips_file, line_of_info);
@@ -138,7 +178,7 @@ void DataHandler::load_stop_info(const std::string& txt_path)
 
     bool good_structure = check_csv_structure(structure, 9, line_of_info);
     if(!good_structure)
-        throw "bad structure in routes";
+        throw std::runtime_error("bad structure in routes");
     //end of check
 
     while (!stop_info_file.eof())
@@ -160,7 +200,7 @@ void DataHandler::load_stop_info(const std::string& txt_path)
 
         //Stop Desc
         getline(s, word, ',');
-        StopInfo.StopDesc = word.empty() ? 0 : stoi(word);
+        StopInfo.StopDesc = word.empty() ? 0 : word;
 
         //Stop Lat
         getline(s, word, ',');
@@ -193,7 +233,7 @@ void DataHandler::load_stop_times(const std::string& txt_path)
     stop_times_file.open(txt_path);
 
     if (!stop_times_file.is_open()) {
-        throw "Failed to open file\n";
+        throw std::runtime_error("Failed to open file\n");
     }
 
     FileStopTime stopTime;
@@ -208,11 +248,9 @@ void DataHandler::load_stop_times(const std::string& txt_path)
     string structure[8] = {"trip_id","arrival_time","departure_time","stop_id","stop_sequence","pickup_type","drop_off_type","shape_dist_traveled"};
     getline(stop_times_file, line_of_info);
 
-    std::cout << "line of info: " << line_of_info << endl;
-
     bool good_structure = check_csv_structure(structure, 8, line_of_info);
     if(!good_structure)
-        throw "bad structure in routes";
+        throw std::runtime_error("bad structure in routes");
     //end of check
 
     stringstream s;
@@ -342,7 +380,7 @@ void DataHandler::load_shapes(const std::string& txt_path)
     //map<int, string> shapes_list;
 
     string word, line_of_info, shape_str;
-    int lastShapeId = 0, last_sequence = 0;
+    int lastShapeId = 0, last_sequence = 1;
     list<CoordinateEntity> coordinates;
 
     //checking first line for csv structure
@@ -352,12 +390,13 @@ void DataHandler::load_shapes(const std::string& txt_path)
 
     bool good_structure = check_csv_structure(structure, 4, line_of_info);
     if(!good_structure)
-        throw "bad structure in shapes";
+        throw std::runtime_error("bad structure in shapes");
     //end of check
 
     while (!shapes_file.eof())
     {
 
+        getline(shapes_file, line_of_info);
         stringstream s(line_of_info);
 
         //shape id
@@ -378,7 +417,7 @@ void DataHandler::load_shapes(const std::string& txt_path)
         if(lastShapeId != shape.ShapeId)
         {
             if(shape.sequence != 1)
-                throw "shape error";
+                throw std::runtime_error("shape error 1");
             if(lastShapeId != 0)
             {
                 shape_str = encode_coordinates_list(coordinates);
@@ -388,20 +427,26 @@ void DataHandler::load_shapes(const std::string& txt_path)
             lastShapeId = shape.ShapeId;
             CoordinateEntity tempCoord = {shape.lon,shape.lat};
             coordinates.emplace_back(tempCoord);
+            last_sequence = 1;
         }
         else
         {
             last_sequence++;
             if(last_sequence != shape.sequence)
-                throw "shape error";
+            {
+                std::cout << std::endl << "last sequence: " << last_sequence  << " shape.sequence: " << shape.sequence << " shapeID " << shape.ShapeId << " last shapeid: " << lastShapeId<< std::endl;
+                throw std::runtime_error("shape error 2");
+            }
             CoordinateEntity tempCoord = {shape.lon,shape.lat};
             coordinates.emplace_back(tempCoord);
         }
     }
+    this->api_entities.Shapes = shapes_list;
 }
 
 std::list<RouteTrips> DataHandler::process_trips(std::list<FileTrips> csv_trips)
 {
+
     std::list<RouteTrips> route_and_Trips;
 
     bool flag = false;
