@@ -12,7 +12,13 @@ using namespace std;
 class DataHandler
 {
     public:
-        DataHandler() { }
+        DataHandler() 
+        {
+            //initialize data
+            file_entities = FileEntities();
+            api_entities = ApiEntities();
+            json_strs = JsonStrs();
+        }
         ~DataHandler() { }
 
         //getting the data from the file
@@ -27,7 +33,7 @@ class DataHandler
         void send_data();
 
     private:
-    FileEntities file_entities{};
+    FileEntities file_entities;
     ApiEntities api_entities;
     JsonStrs json_strs;
 
@@ -42,14 +48,15 @@ class DataHandler
     void encode_single_coord(const float coordinate, std::string& output_str);
     std::string encode_coordinates_list(const std::list<CoordinateEntity>& coordinates);
 
-    std::list<RouteTrips> process_trips(std::list<FileTrips> csv_trips);
+    //std::list<RouteTrips> process_trips(std::list<FileTrips> csv_trips);
+    std::list<RouteTrips> process_trips();
 
 
     string get_interval(const string& str1, const string& str2);
-    list<Routes> to_api_routes(list<FileRoutes> fileRoutes);
-    list<StopInfo> to_api_stopInfo(list<FileStopInfo> fileStops);
-    list<ExtendedRoutes> process_routes(list<RouteTrips> route_trips, list<FileRoutes> file_routes, list<FileTrips> file_trips, map<string, list<StopTime>> stop_times, list<Shape> shapes);
-    map<string, list<StopTime>> stopTimes_map(list<FileStopTime> fileStops);
+    void to_api_routes();
+    void to_api_stopInfo();
+    void process_routes(list<RouteTrips> route_trips, map<string,list<StopTime>> stop_times);
+    map<string, list<StopTime>> stopTimes_map();
     map<int, string> convertListToMap(const list<Shape>& list);
 
 

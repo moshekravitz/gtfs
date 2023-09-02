@@ -7,19 +7,18 @@ void DataHandler::process_data(){
     else
         cout << "not null";
     list<FileTrips> asdf = *this->file_entities.trips;
-    std::cout << "adsf :";
-    std::cout << asdf.front().TripId;
 
-    list<RouteTrips> route_and_trips = process_trips(*(this->file_entities.trips));
+    list<RouteTrips> route_and_trips = process_trips();
     std::cout << "processed trips\n";
     // stopTimes_map(*this->file_entities.stop_times;
-    map<string, list<StopTime>> stop_times_map = DataHandler::stopTimes_map(*this->file_entities.stopTime);
+    std::cout << "processing creating stop times map\n";
+    map<string, list<StopTime>> stop_times_map = stopTimes_map();
     std::cout << "got stop time map\n";
-    this->api_entities.Routes = to_api_routes(*this->file_entities.routes);
+    to_api_routes();
     std::cout << "got api routes\n";
-    this->api_entities.Stops = to_api_stopInfo(*this->file_entities.stopInfo);
+    to_api_stopInfo();
     std::cout << "got api stop info\n";
-    this->api_entities.ExtendedRoutes = process_routes(route_and_trips, *this->file_entities.routes, *this->file_entities.trips, stop_times_map, this->api_entities.Shapes);
+    process_routes(route_and_trips, stop_times_map);
     std::cout << "processed routes\n";
 
 }
@@ -93,29 +92,26 @@ string DataHandler::get_interval(const string& str1, const string& str2)
 
 }
 
-list<Routes> DataHandler::to_api_routes(list<FileRoutes> fileRoutes)
+void DataHandler::to_api_routes()
 {
-    list<Routes> api_routes;
-    for(auto route : fileRoutes)
+    for(auto route : *file_entities.routes)
     {
         Routes api_single_route = {route.RouteId,route.RouteShortName, route.RouteLongName};
-        api_routes.push_back(api_single_route);
+        api_entities.routes.push_back(api_single_route);
     }
-    return api_routes;
 }
 
-list<StopInfo> DataHandler::to_api_stopInfo(list<FileStopInfo> fileStops)
+void DataHandler::to_api_stopInfo()
 {
     list<StopInfo> api_stops;
-    for(auto stop : fileStops)
+    for(auto stop : *file_entities.stopInfo)
     {
         StopInfo api_single_stop = {stop.StopId, stop.StopName, stop.StopLat, stop.StopLon};
-        api_stops.push_back(api_single_stop);
+        api_entities.stops.push_back(api_single_stop);
     }
-    return api_stops;
 }
 
-map<string, list<StopTime>> DataHandler::stopTimes_map(list<FileStopTime> fileStops)
+map<string, list<StopTime>> DataHandler::stopTimes_map()
 {
     std::string trip_id, last_time, current_time, interval;
     map<string, list<StopTime>> trip_stops;//stopInfo id, intervals
@@ -123,7 +119,8 @@ map<string, list<StopTime>> DataHandler::stopTimes_map(list<FileStopTime> fileSt
     int stopId;
 
     int flag = 0;
-    for(auto stop : fileStops)
+    cout << "looping on stop times\n";
+    for(auto stop : *file_entities.stopTime)
     {
         stopId = stop.StopId;
         if(stop.StopSequence == 1)
@@ -139,13 +136,6 @@ map<string, list<StopTime>> DataHandler::stopTimes_map(list<FileStopTime> fileSt
         }
         else
         {
-            /*
-            if(flag < 15)
-            {
-                std::cout << "last: "<< last_time << " last: "<< stop.DepartureTime << endl;
-                flag++;
-            }
-             */
             interval = get_interval(last_time,stop.DepartureTime);
         }
 
@@ -156,6 +146,7 @@ map<string, list<StopTime>> DataHandler::stopTimes_map(list<FileStopTime> fileSt
 
       last_time = stop.DepartureTime;
     }
+    cout << "done with stop times map\n";
     return trip_stops;
 }
 
@@ -169,14 +160,14 @@ std::map<int, std::string> DataHandler::convertListToMap(const std::list<Shape>&
     return resultMap;
 }
 
-std::list<ExtendedRoutes> DataHandler::process_routes(std::list<RouteTrips> route_trips, std::list<FileRoutes> file_routes, std::list<FileTrips> file_trips, std::map<std::string, std::list<StopTime>> stop_times, std::list<Shape> shapes)  
+void DataHandler::process_routes(std::list<RouteTrips> route_trips, std::map<std::string, std::list<StopTime>> stop_times)  
 {
     //std::map<int, std::string> shapes_map = convertListToMap(shapes);
-    std::list<ExtendedRoutes> extended_routes;
+    //std::list<ExtendedRoutes> extended_routes;
     ExtendedRoutes temp_route;
     RouteTrips tempRouteTrip;
 
-    for(auto route = file_routes.begin(); route != file_routes.end(); route++)
+    for(auto route = file_entities.routes->begin(); route != file_entities.routes->end(); route++)
     {
         temp_route.RouteId = route->RouteId;
         for(auto route_trips_it = route_trips.begin(); route_trips_it != route_trips.end(); route_trips_it++)
@@ -191,14 +182,14 @@ std::list<ExtendedRoutes> DataHandler::process_routes(std::list<RouteTrips> rout
         //temp_route.RouteId = route->routeId;
         
         FileTrips temp_trip;
-        for(auto file_trip = file_trips.begin(); file_trip != file_trips.end(); file_trip++)
+        for(auto file_trip = file_entities.trips->begin(); file_trip != file_entities.trips->end(); file_trip++)
         {
             for(auto trip = tempRouteTrip.trips.begin(); trip != tempRouteTrip.trips.end(); trip++)
             {
                 if(*trip == file_trip->TripId)
                 {
                     temp_trip = *file_trip;
-                    file_trip = file_trips.end();
+                    file_trip = file_entities.trips->end();
                     file_trip--;
                 }
             }
@@ -210,12 +201,12 @@ std::list<ExtendedRoutes> DataHandler::process_routes(std::list<RouteTrips> rout
                 //temp_route.ShapeStr = shapes_map[temp_trip.ShapeId];
         //else
          //   throw std::runtime_error("ShapeId not found in process routes");
-        for(auto shapesIt = shapes.begin(); shapesIt != shapes.end(); shapesIt++)
+        for(auto shapesIt = api_entities.shapes.begin(); shapesIt != api_entities.shapes.end(); shapesIt++)
         {
             if(shapesIt->ShapeId == temp_trip.ShapeId)
             {
                 temp_route.ShapeStr = shapesIt->shape;
-                shapesIt = shapes.end();
+                shapesIt = api_entities.shapes.end();
                 shapesIt--;
             }
         }
@@ -230,8 +221,6 @@ std::list<ExtendedRoutes> DataHandler::process_routes(std::list<RouteTrips> rout
                 stop_time--;
             }
         }
-        extended_routes.push_back(temp_route);
+        api_entities.extendedRoutes.push_back(temp_route);
     }
-
-    return extended_routes;
 }

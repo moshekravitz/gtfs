@@ -49,10 +49,10 @@ struct StopInfo
 
 struct ApiEntities
 {
-    std::list<Routes> Routes;
-    std::list<Shape> Shapes;
-    std::list<StopInfo> Stops;
-    std::list<ExtendedRoutes> ExtendedRoutes;
+    std::list<Routes> routes;
+    std::list<Shape> shapes;
+    std::list<StopInfo> stops;
+    std::list<ExtendedRoutes> extendedRoutes;
 };
 
 struct JsonStrs

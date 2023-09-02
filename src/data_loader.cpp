@@ -11,28 +11,20 @@ using namespace std;
 void DataHandler::load_data(const std::string& txt_path)
 {
     try {
-        this->load_stop_times(txt_path + "/stop_times.txt");
-        std::cout << "loaded stop times\n";
-    }
-    catch(...)
-    {
-        std::cout << "stoptimes\n";
-    }
-    try {
-        this->load_trips(txt_path + "/trips.txt");
-    }
-    catch(...)
-    {
-        std::cout << "trips\n";
-    }
-    try {
-
         this->load_routes(txt_path + "/routes.txt");
         std::cout << "loaded routes\n";
     }
     catch(...)
     {
-        std::cout << "routes\n";
+        std::cout << "failed to load routes\n";
+    }
+    try {
+        this->load_trips(txt_path + "/trips.txt");
+        std::cout << "loaded trips\n";
+    }
+    catch(...)
+    {
+        std::cout << "failed to load trips\n";
     }
     try {
         this->load_shapes(txt_path + "/shapes.txt");
@@ -48,13 +40,30 @@ void DataHandler::load_data(const std::string& txt_path)
     }
     catch(...)
     {
-        std::cout << "shapes\n";
+        std::cout << "failed to load shapes\n";
+    }
+    try {
+        this->load_stop_times(txt_path + "/stop_times.txt");
+        std::cout << "loaded stop times\n";
+    }
+    catch(...)
+    {
+        std::cout << "failed to load stop times\n";
+    }
+    try {
+        this->load_stop_info(txt_path + "/stops.txt");
+        std::cout << "loaded stop times\n";
+    }
+    catch(...)
+    {
+        std::cout << "failed to load stop times\n";
     }
 }
 
 void DataHandler::load_routes(const std::string& txt_path)
 {
 
+    file_entities.routes = new std::list<FileRoutes>;
     //list<FileRoutes> get_file_routes_list(const std::string& txt_path)
     //{
     
@@ -62,7 +71,7 @@ void DataHandler::load_routes(const std::string& txt_path)
     routes_file.open(txt_path);
 
     FileRoutes route;
-    list<FileRoutes> routes_list;
+    //list<FileRoutes>* routes_list;
 
     string word, line_of_info;
 
@@ -97,10 +106,10 @@ void DataHandler::load_routes(const std::string& txt_path)
         getline(s, word, ',');
         route.RouteLongName = word;
 
-        routes_list.emplace_back(route);
+        file_entities.routes->emplace_back(route);
 
     }
-    this->file_entities.routes = &routes_list;
+    //this->file_entities.routes = routes_list;
 }
 
 
@@ -111,7 +120,8 @@ void DataHandler::load_trips(const std::string& txt_path)
     trips_file.open(txt_path);
 
     FileTrips trip;
-    std::list<FileTrips> trips_list;
+    file_entities.trips = new std::list<FileTrips>;
+    //std::list<FileTrips> trips_list;
 
     std::string word, line_of_info;
 
@@ -154,11 +164,10 @@ void DataHandler::load_trips(const std::string& txt_path)
         getline(s, word, ',');
         trip.ShapeId = word.empty() ? 0 : stoi(word);
 
-        trips_list.emplace_back(trip);
+        file_entities.trips->emplace_back(trip);
         asdf++;
     }
-
-    this->file_entities.trips = &trips_list;
+    //this->file_entities.trips = &trips_list;
 }
 
 void DataHandler::load_stop_info(const std::string& txt_path)
@@ -167,7 +176,8 @@ void DataHandler::load_stop_info(const std::string& txt_path)
     stop_info_file.open(txt_path);
 
     FileStopInfo StopInfo;
-    std::list<FileStopInfo> stop_info_list;
+    file_entities.stopInfo = new std::list<FileStopInfo>;
+    //std::list<FileStopInfo> stop_info_list;
 
     std::string word, line_of_info;
 
@@ -222,9 +232,9 @@ void DataHandler::load_stop_info(const std::string& txt_path)
         getline(s, word, ',');
         StopInfo.ZoneId = word.empty() ? 0 : stoi(word);
 
-        stop_info_list.emplace_back(StopInfo);
+        file_entities.stopInfo->emplace_back(StopInfo);
     }
-    this->file_entities.stopInfo = &stop_info_list;
+    //this->file_entities.stopInfo = &stop_info_list;
 }
 
 void DataHandler::load_stop_times(const std::string& txt_path)
@@ -237,12 +247,13 @@ void DataHandler::load_stop_times(const std::string& txt_path)
     }
 
     FileStopTime stopTime;
+    file_entities.stopTime = new std::list<FileStopTime>;
     //std::list<FileStopTime> trip_stop_time;
 
     std::string word, line_of_info, shape_str,tripId, last_trip_id = "";
     int  last_stop_sequence = 0;
 
-    list<FileStopTime> stopsTimes_list;
+    //list<FileStopTime> stopsTimes_list;
 
     //checking first line for csv structure
     string structure[8] = {"trip_id","arrival_time","departure_time","stop_id","stop_sequence","pickup_type","drop_off_type","shape_dist_traveled"};
@@ -291,42 +302,16 @@ void DataHandler::load_stop_times(const std::string& txt_path)
         getline(s, word, ',');
         stopTime.ShapeDistTraveled = word.empty() ? 0 : stoi(word);
 
-        stopsTimes_list.push_back(stopTime);
+        file_entities.stopTime->push_back(stopTime);
 
         getline(stop_times_file, line_of_info);
         s.clear();
         s << line_of_info;
-
-        /*
-        if(last_trip_id != tripId)
-        {
-            std::cout << "last_trip_id: " << last_trip_id << " current: " << tripId << endl;
-            if(stopTime.StopSequence != 1)
-            {
-                throw "shape error";
-            }
-            if(last_trip_id != "")
-            {
-                stopsTimes_list[last_trip_id] = stopTime;
-            }
-            last_trip_id = tripId;
-            last_stop_sequence = 1;
-        }
-        else
-        {
-            last_stop_sequence++;
-            std::cout << "last_stop_sequence: " << last_stop_sequence << " current: " << stopTime.StopSequence << endl;
-            if(last_stop_sequence != stopTime.StopSequence)
-                throw "shape error";
-        }
-
-        trip_stop_time.push_back(stopTime);
-         */
     }
 
     stop_times_file.close();
 
-    this->file_entities.stopTime = &stopsTimes_list;
+    //this->file_entities.stopTime = &stopsTimes_list;
 }
 
 void DataHandler::encode_single_coord(const float coordinate, string& output_str) {
@@ -376,7 +361,7 @@ void DataHandler::load_shapes(const std::string& txt_path)
     shapes_file.open(txt_path);
 
     FileShapes shape;
-    list<Shape> shapes_list;
+    //list<Shape> shapes_list;
     //map<int, string> shapes_list;
 
     string word, line_of_info, shape_str;
@@ -422,7 +407,7 @@ void DataHandler::load_shapes(const std::string& txt_path)
             {
                 shape_str = encode_coordinates_list(coordinates);
                 //shapes_list[lastShapeId] = shape_str;
-                shapes_list.emplace_back(Shape{lastShapeId, shape_str});
+                api_entities.shapes.emplace_back(Shape{lastShapeId, shape_str});
             }
             lastShapeId = shape.ShapeId;
             CoordinateEntity tempCoord = {shape.lon,shape.lat};
@@ -441,16 +426,16 @@ void DataHandler::load_shapes(const std::string& txt_path)
             coordinates.emplace_back(tempCoord);
         }
     }
-    this->api_entities.Shapes = shapes_list;
+    //this->api_entities.shapes = shapes_list;
 }
 
-std::list<RouteTrips> DataHandler::process_trips(std::list<FileTrips> csv_trips)
+std::list<RouteTrips> DataHandler::process_trips()
 {
 
     std::list<RouteTrips> route_and_Trips;
 
     bool flag = false;
-    for(std::list<FileTrips>::const_iterator it = csv_trips.begin(); it != csv_trips.end(); it++)
+    for(std::list<FileTrips>::const_iterator it = file_entities.trips->begin(); it != file_entities.trips->end(); it++)
     {
         for(auto route = route_and_Trips.begin(); route != route_and_Trips.end(); route++)
         {

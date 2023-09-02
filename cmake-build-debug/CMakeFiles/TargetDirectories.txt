@@ -1,3 +1,3 @@
-C:/Users/moshe kravitz/source/repos/moshekravitz/gtfs/cmake-build-debug/CMakeFiles/gtfs.dir
-C:/Users/moshe kravitz/source/repos/moshekravitz/gtfs/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/moshe kravitz/source/repos/moshekravitz/gtfs/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/moshekravitz/gtfs/cmake-build-debug/CMakeFiles/gtfs.dir
+/home/moshekravitz/gtfs/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/moshekravitz/gtfs/cmake-build-debug/CMakeFiles/rebuild_cache.dir
