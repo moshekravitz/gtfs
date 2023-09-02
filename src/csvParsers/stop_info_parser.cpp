@@ -36,7 +36,7 @@ list<FileStopInfo> get_file_stop_info_list(const std::string& txt_path)
 
         //Stop Code
         getline(s, word, ',');
-        StopInfo.StopCode = word.empty() ? 0 : stoi(word);
+        //StopInfo.StopCode = word.empty() ? 0 : stoi(word);
 
         //Stop Name
         getline(s, word, ',');
@@ -44,7 +44,7 @@ list<FileStopInfo> get_file_stop_info_list(const std::string& txt_path)
 
         //Stop Desc
         getline(s, word, ',');
-        StopInfo.StopDesc = word.empty() ? 0 : stoi(word);
+        //StopInfo.StopDesc = word.empty() ? 0 : stoi(word);
 
         //Stop Lat
         getline(s, word, ',');
@@ -56,15 +56,15 @@ list<FileStopInfo> get_file_stop_info_list(const std::string& txt_path)
 
         //Location Type
         getline(s, word, ',');
-        StopInfo.LocationType = word.empty() ? 0 : stoi(word);
+        //StopInfo.LocationType = word.empty() ? 0 : stoi(word);
 
         //Parent Station
         getline(s, word, ',');
-        StopInfo.ParentStation = word.empty() ? 0 : stoi(word);
+        //StopInfo.ParentStation = word.empty() ? 0 : stoi(word);
 
         //Zone Id
         getline(s, word, ',');
-        StopInfo.ZoneId = word.empty() ? 0 : stoi(word);
+        //StopInfo.ZoneId = word.empty() ? 0 : stoi(word);
 
         stop_info_list.emplace_back(StopInfo);
     }

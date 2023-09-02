@@ -1,4 +1,5 @@
 #include "data_handler.h"
+#include <new>
 
 void DataHandler::process_data(){
     std::cout << "processing data\n";
@@ -12,12 +13,22 @@ void DataHandler::process_data(){
     std::cout << "processed trips\n";
     // stopTimes_map(*this->file_entities.stop_times;
     std::cout << "processing creating stop times map\n";
-    map<string, list<StopTime>> stop_times_map = stopTimes_map();
-    std::cout << "got stop time map\n";
     to_api_routes();
     std::cout << "got api routes\n";
     to_api_stopInfo();
     std::cout << "got api stop info\n";
+
+    //delete file entities to free memory
+    //delete this->file_entities.routes;
+    //delete this->file_entities.stopInfo;
+    //delete this->file_entities.trips;
+    std::cout << "stopTime size: "<< file_entities.stopTime->size() << endl;
+
+    vector<pair<string, list<StopTime>>> stop_times_map;
+
+    stop_times_map = stopTimes_map();
+
+    std::cout << "got stop time map\n";
     process_routes(route_and_trips, stop_times_map);
     std::cout << "processed routes\n";
 
@@ -111,38 +122,88 @@ void DataHandler::to_api_stopInfo()
     }
 }
 
-map<string, list<StopTime>> DataHandler::stopTimes_map()
+vector<pair<string, list<StopTime>>> DataHandler::stopTimes_map()
 {
-    std::string trip_id, last_time, current_time, interval;
-    map<string, list<StopTime>> trip_stops;//stopInfo id, intervals
-    list<StopTime> stop_times;
+    std::string trip_id = file_entities.stopTime->front().TripId;
+    std::string last_time, current_time, interval;
+    //map<string, list<StopTime>> trip_stops;//stopInfo id, intervals
+    vector<pair<string, list<StopTime>>> trip_stops;//stopInfo id, intervals
+    list<StopTime>* stop_times = new list<StopTime>;
     int stopId;
+    cout << "max trip stops: "<< trip_stops.max_size() << endl;
 
     int flag = 0;
     cout << "looping on stop times\n";
+
     for(auto stop : *file_entities.stopTime)
     {
+        if(trip_stops.size() > trip_stops.max_size() - 100)
+        {
+            cout << "trip_stops size: "<< trip_stops.size() << endl;
+            throw std::string("trip_stops size exceeded max size");
+        }
+        counter++;
         stopId = stop.StopId;
         if(stop.StopSequence == 1)
         {
-            interval = "00:00:00";
+            //interval = "00:00:00";
+            interval = stop.DepartureTime;
 
             if(interval != "")
             {
-                trip_stops[trip_id] = stop_times;
+                //trip_stops[trip_id] = stop_times;
+                try
+                {
+                    trip_stops.push_back({trip_id, *stop_times});
+                }
+                catch(std::bad_alloc& e)
+                {
+                    cout << "bad alloc: " << e.what() << endl;
+                    cout << "trip_stops push_back exception\n";
+                    throw e;
+                }
+                catch(std::exception& e)
+                {
+                    cout << "exception: " << e.what() << endl;
+                    cout << "trip_stops push_back exception\n";
+                    throw e;
+                }
+                catch(std::string& e)
+                {
+                    cout << "trip_stops push_back exception\n";
+                    throw e;
+                }
+                catch(...)
+                {
+                    throw std::string("trip_stops push_back exception\n");
+                }
+                try
+                {
+                    stop_times = new list<StopTime>;
+                }
+                catch(std::exception& e)
+                {
+                    cout << "new list stop times exception: " << e.what() << endl;
+                    throw e;
+                }
+                catch(...)
+                {
+                    throw std::string("stop_times allocation exception\n");
+                }
             }
 
             trip_id = stop.TripId;
         }
         else
         {
-            interval = get_interval(last_time,stop.DepartureTime);
+            //interval = get_interval(last_time,stop.DepartureTime);
+            interval = stop.DepartureTime;
         }
 
       string sequence_and_interval = to_string(stop.StopSequence) + ";" + interval;
 
       //stop_times[stopId] = sequence_and_interval;
-      stop_times.push_back({stopId, sequence_and_interval});
+      stop_times->push_back({stopId, sequence_and_interval});
 
       last_time = stop.DepartureTime;
     }
@@ -160,7 +221,8 @@ std::map<int, std::string> DataHandler::convertListToMap(const std::list<Shape>&
     return resultMap;
 }
 
-void DataHandler::process_routes(std::list<RouteTrips> route_trips, std::map<std::string, std::list<StopTime>> stop_times)  
+//void DataHandler::process_routes(std::list<RouteTrips> route_trips, std::map<std::string, std::list<StopTime>> stop_times)  
+void DataHandler::process_routes(std::list<RouteTrips> route_trips, std::vector<pair<std::string, std::list<StopTime>>> stop_times)  
 {
     //std::map<int, std::string> shapes_map = convertListToMap(shapes);
     //std::list<ExtendedRoutes> extended_routes;
@@ -211,6 +273,7 @@ void DataHandler::process_routes(std::list<RouteTrips> route_trips, std::map<std
             }
         }
 
+        //find in map and return it instead of iteration
         for(auto stop_time = stop_times.begin(); stop_time != stop_times.end(); stop_time++)
         {
             if(stop_time->first == temp_trip.TripId)

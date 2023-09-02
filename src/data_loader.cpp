@@ -52,11 +52,15 @@ void DataHandler::load_data(const std::string& txt_path)
     }
     try {
         this->load_stop_info(txt_path + "/stops.txt");
-        std::cout << "loaded stop times\n";
+        std::cout << "loaded stop info\n";
+    }
+    catch(std::exception& e)
+    {
+        std::cout << e.what() << " in stops info\n";
     }
     catch(...)
     {
-        std::cout << "failed to load stop times\n";
+        std::cout << "failed to load stop info\n";
     }
 }
 
@@ -190,6 +194,10 @@ void DataHandler::load_stop_info(const std::string& txt_path)
     if(!good_structure)
         throw std::runtime_error("bad structure in routes");
     //end of check
+    
+    stringstream s;
+    getline(stop_info_file, line_of_info);
+    s << line_of_info;
 
     while (!stop_info_file.eof())
     {
@@ -202,7 +210,7 @@ void DataHandler::load_stop_info(const std::string& txt_path)
 
         //Stop Code
         getline(s, word, ',');
-        StopInfo.StopCode = word.empty() ? 0 : stoi(word);
+        //StopInfo.StopCode = word.empty() ? 0 : stoi(word);
 
         //Stop Name
         getline(s, word, ',');
@@ -210,31 +218,37 @@ void DataHandler::load_stop_info(const std::string& txt_path)
 
         //Stop Desc
         getline(s, word, ',');
-        StopInfo.StopDesc = word.empty() ? 0 : word;
+        //StopInfo.StopDesc = word.empty() ? 0 : word;
 
         //Stop Lat
         getline(s, word, ',');
-        StopInfo.StopLat = word.empty() ? 0 : stoi(word);
+        StopInfo.StopLat = word.empty() ? 0 : stod(word);
 
         //Stop Lon
         getline(s, word, ',');
-        StopInfo.StopLon = word.empty() ? 0 : stoi(word);
+        StopInfo.StopLon = word.empty() ? 0 : stod(word);
 
         //Location Type
         getline(s, word, ',');
-        StopInfo.LocationType = word.empty() ? 0 : stoi(word);
+        //StopInfo.LocationType = word.empty() ? 0 : stoi(word);
 
         //Parent Station
         getline(s, word, ',');
-        StopInfo.ParentStation = word.empty() ? 0 : stoi(word);
+        //StopInfo.ParentStation = word.empty() ? 0 : stoi(word);
 
         //Zone Id
         getline(s, word, ',');
-        StopInfo.ZoneId = word.empty() ? 0 : stoi(word);
+        //StopInfo.ZoneId = word.empty() ? 0 : stoi(word);
 
         file_entities.stopInfo->emplace_back(StopInfo);
+
+        getline(stop_info_file, line_of_info);
+        s.clear();
+        s << line_of_info;
     }
+
     //this->file_entities.stopInfo = &stop_info_list;
+    stop_info_file.close();
 }
 
 void DataHandler::load_stop_times(const std::string& txt_path)
@@ -292,15 +306,15 @@ void DataHandler::load_stop_times(const std::string& txt_path)
 
         //Pickup Type
         getline(s, word, ',');
-        stopTime.PickupType = word.empty() ? 0 : stoi(word);
+        //stopTime.PickupType = word.empty() ? 0 : stoi(word);
 
         //Drop Off Type
         getline(s, word, ',');
-        stopTime.DropOffType = word.empty() ? 0 : stoi(word);
+        //stopTime.DropOffType = word.empty() ? 0 : stoi(word);
 
         //Shape Id
         getline(s, word, ',');
-        stopTime.ShapeDistTraveled = word.empty() ? 0 : stoi(word);
+        //stopTime.ShapeDistTraveled = word.empty() ? 0 : stoi(word);
 
         file_entities.stopTime->push_back(stopTime);
 

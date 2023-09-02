@@ -56,6 +56,7 @@ list<FileStopTime> get_file_stop_time_list(const std::string& txt_path)
         getline(s, word, ',');
         stopTime.StopSequence = word.empty() ? 0 : stoi(word);
 
+        /*
         //Pickup Type
         getline(s, word, ',');
         stopTime.PickupType = word.empty() ? 0 : stoi(word);
@@ -67,6 +68,7 @@ list<FileStopTime> get_file_stop_time_list(const std::string& txt_path)
         //Shape Id
         getline(s, word, ',');
         stopTime.ShapeDistTraveled = word.empty() ? 0 : stoi(word);
+        */
 
         stopsTimes_list.push_back(stopTime);
 

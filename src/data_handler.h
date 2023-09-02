@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <vector>
 #include "../headers/FileEntities.h"
 #include "../headers/ApiEntities.h"
 #include "../headers/BL.h"
@@ -18,6 +19,7 @@ class DataHandler
             file_entities = FileEntities();
             api_entities = ApiEntities();
             json_strs = JsonStrs();
+            counter = 0;
         }
         ~DataHandler() { }
 
@@ -36,6 +38,8 @@ class DataHandler
     FileEntities file_entities;
     ApiEntities api_entities;
     JsonStrs json_strs;
+    //TODO - delete this
+    int counter;
 
     //getting the data from the file
     void load_routes(const std::string& txt_path);
@@ -55,8 +59,10 @@ class DataHandler
     string get_interval(const string& str1, const string& str2);
     void to_api_routes();
     void to_api_stopInfo();
-    void process_routes(list<RouteTrips> route_trips, map<string,list<StopTime>> stop_times);
-    map<string, list<StopTime>> stopTimes_map();
+    void process_routes(list<RouteTrips> route_trips, vector<pair<string,list<StopTime>>> stop_times);
+    //void process_routes(list<RouteTrips> route_trips, map<string,list<StopTime>> stop_times);
+    //map<string, list<StopTime>> stopTimes_map();
+    vector<pair<string, list<StopTime>>> stopTimes_map();
     map<int, string> convertListToMap(const list<Shape>& list);
 
 

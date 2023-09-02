@@ -25,30 +25,27 @@ struct FileStopTime
     std::string DepartureTime;
     int StopId;
     int StopSequence;
-    int PickupType;
-    int DropOffType;
-    int ShapeDistTraveled;
 };
 
 struct FileStopInfo
 {
     int StopId;
 
-    int StopCode;
+    //int StopCode;
 
     std::string StopName;
 
-    std::string StopDesc;
+    //std::string StopDesc;
 
     double StopLat;
 
     double StopLon;
 
-    int LocationType;
+    //int LocationType;
 
-    int ParentStation;
+    //int ParentStation;
 
-    int ZoneId;
+    //int ZoneId;
 };
 struct CoordinateEntity
 {

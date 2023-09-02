@@ -19,7 +19,7 @@ int main()
 
     std::string asdf = "/home/moshekravitz/Downloads/israel-public-transportation-few";
     std::cout << "starting\n";
-    fix_files({asdf + "/routes.txt",asdf + "/trips.txt",asdf + "/shapes.txt",asdf + "/stop_times.txt",asdf + "/stops"});//asdf + "/stop_info.txt",
+    fix_files({asdf + "/routes.txt",asdf + "/trips.txt",asdf + "/shapes.txt",asdf + "/stop_times.txt",asdf + "/stops.txt"});//asdf + "/stop_info.txt",
 
     try
     {
