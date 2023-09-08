@@ -23,8 +23,3 @@ struct RouteTrips
 };
 
 
-struct BCoordinateEntity
-{
-    double longitude;
-    double latitude;
-};

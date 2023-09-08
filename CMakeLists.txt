@@ -3,4 +3,9 @@ project(gtfs)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(gtfs src/main.cpp headers/ApiEntities.h src/csvParsers/routes_parser.cpp headers/FileEntities.h src/csvParsers/trips_parser.cpp src/csvParsers/stop_times_parser.cpp src/csvParsers/checks.cpp headers/checks.h src/csvParsers/stop_info_parser.cpp src/csvParsers/shapes_parser.cpp headers/BEntities.h headers/parsers.h headers/BL.h tests/ToApiTest.cpp src/data_loader.cpp src/data_processing.cpp src/serializer.cpp src/http.cpp)
+#add cpr vcpkg
+find_package(cpr CONFIG REQUIRED)
+
+add_executable(gtfs src/main.cpp headers/ApiEntities.h  headers/FileEntities.h src/checks.cpp headers/checks.h headers/BEntities.h headers/parsers.h headers/BL.h tests/ToApiTest.cpp src/data_loader.cpp src/data_processing.cpp src/serializer.cpp src/http.cpp)
+
+target_link_libraries(gtfs PRIVATE cpr::cpr)

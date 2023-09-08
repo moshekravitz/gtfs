@@ -17,6 +17,7 @@ struct Coordinates
     double lon;
 };
 
+
 struct Shape
 {
     int ShapeId;
@@ -49,16 +50,16 @@ struct StopInfo
 
 struct ApiEntities
 {
-    std::list<Routes> routes;
-    std::list<Shape> shapes;
-    std::list<StopInfo> stops;
-    std::list<ExtendedRoutes> extendedRoutes;
+    std::list<Routes>* routes;
+    std::list<Shape>* shapes;
+    std::list<StopInfo>* stops;
+    std::list<ExtendedRoutes>* extendedRoutes;
 };
 
 struct JsonStrs
 {
-    string Routes;
-    string Shapes;
-    string Stops;
-    string ExtendedRoutes;
+    const char* Routes;
+    const char* Shapes;
+    const char* Stops;
+    const char* ExtendedRoutes;
 };

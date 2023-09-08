@@ -3,13 +3,14 @@
 
 void DataHandler::serialize_data()
 {
-    json_strs.Routes = to_json(api_entities.routes);
+    //json_strs.Routes = to_json(api_entities.routes).c_str();
+    json_strs.Routes = routes_to_json().c_str();
     //json_strs.Shapes = to_json(api_entities.shapes);
-    json_strs.ExtendedRoutes = to_json(api_entities.extendedRoutes);
-    json_strs.Stops = to_json(api_entities.stops);
+    json_strs.ExtendedRoutes = extendedRoutes_to_json().c_str();
+    json_strs.Stops = stop_info_to_json().c_str();
 }
 
-string DataHandler::to_json(const list<StopTime>& stop_times)
+string DataHandler::to_json(const list<StopTime> stop_times)
 {
     if(stop_times.empty())
     {
@@ -29,11 +30,11 @@ string DataHandler::to_json(const list<StopTime>& stop_times)
     return str;
 }
 
-string DataHandler::to_json(const list<ExtendedRoutes>& routes)
+string DataHandler::extendedRoutes_to_json()
 {
     string str = "[";
 	//str += it->toJson();
-	for (auto it = routes.begin(); it != routes.end(); ++it)
+	for (auto it = api_entities.extendedRoutes->begin(); it != api_entities.extendedRoutes->end(); ++it)
 	{
         str += "{\"routeId\":\"";
         str += to_string(it->RouteId);
@@ -49,15 +50,15 @@ string DataHandler::to_json(const list<ExtendedRoutes>& routes)
 	return str;
 }
 
-string DataHandler::to_json(const list<StopInfo>& stops)
+string DataHandler::stop_info_to_json()
 {
     string str = "[";
     //str += it->toJson();
-    for (auto it = stops.begin(); it != stops.end(); ++it)
+    for (auto it = api_entities.stops->begin(); it != api_entities.stops->end(); ++it)
     {
         str += "{\"stopId\":\"";
         str += to_string(it->stopId);
-        str += "\",\"headSign\":\"";
+        str += "\",\"stopName\":\"";
         str += it->headSign;
         str += "\",\"lan\":\"";
         str += to_string(it->lan);
@@ -69,11 +70,11 @@ string DataHandler::to_json(const list<StopInfo>& stops)
     return str;
 }
 
-string DataHandler::to_json(const list<Routes>& routes)
+string DataHandler::routes_to_json()
 {
     string str = "[";
     //str += it->toJson();
-    for (auto it = routes.begin(); it != routes.end(); ++it)
+    for (auto it = api_entities.routes->begin(); it != api_entities.routes->end(); ++it)
     {
         str += "{\"routeId\":\"";
         str += to_string(it->RouteId);

@@ -14,7 +14,6 @@ struct FileTrips
     int RouteId;
     std::string TripId;
     std::string TripHeadsign;
-    int DirectionId;
     int ShapeId;
 };
 
@@ -52,6 +51,13 @@ struct CoordinateEntity
     double longitude;
     double latitude;
 };
+
+struct BShapes
+{
+    int ShapeId;
+    std::list<CoordinateEntity> coords;
+};
+
 struct FileShapes
 {
     int ShapeId;
@@ -66,5 +72,5 @@ struct FileEntities
     std::list<FileTrips>* trips;
     std::list<FileStopTime>* stopTime;
     std::list<FileStopInfo>* stopInfo;
-    //std::list<FileShapes>* shapes;
+    std::list<BShapes>* shapes;
 };

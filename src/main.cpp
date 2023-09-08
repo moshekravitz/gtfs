@@ -13,12 +13,21 @@ void fix_files(std::list<std::string> txt_paths);
 
 int main()
 {
-    std::cout << "   starting\n";
+
+    std::cout << "starting\n";
     DataHandler dataHandler;
 
+    char ch = 'y';
+    std::cout << "stops only? [y]/n\n";
+    std::cin >> ch;
+    if(ch == 'y' || ch == 'Y')
+    {
+        dataHandler.send_only_stops();
+        return 0;
+    }
 
-    std::string asdf = "/home/moshekravitz/Downloads/israel-public-transportation-few";
-    std::cout << "starting\n";
+
+    std::string asdf = "/home/moshekravitz/Downloads/israel-public-transportation";
     fix_files({asdf + "/routes.txt",asdf + "/trips.txt",asdf + "/shapes.txt",asdf + "/stop_times.txt",asdf + "/stops.txt"});//asdf + "/stop_info.txt",
 
     try
@@ -81,6 +90,17 @@ void fix_files(std::list<std::string> txt_paths)
         while(file.get(ch))
         {
             if(ch == '\r') {}
+            else if(ch == 0x22)
+            {
+                new_file_stream << ' ';
+            }
+            else if(ch == '\'')
+            {
+                new_file_stream << ' ';
+            }
+            else if(ch == '\\') {
+                new_file_stream << '/';
+            }
             else if(ch >= 0 && ch <= 31 && ch != 10)
             {
                 std::cout << "found wired character " << ch << std::endl;

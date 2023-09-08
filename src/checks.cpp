@@ -1,5 +1,5 @@
 #include <algorithm>
-#include "../../headers/checks.h"
+#include "../headers/checks.h"
 
 bool check_csv_structure(std::string* structure, int size, std::string line_of_info)
 {
